@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram 콘텐츠 대시보드</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0f1117; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #1a1d29;
+            position: fixed;
+            left: 0; top: 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #2d3148;
+            z-index: 100;
+        }
+        .sidebar-logo {
+            padding: 22px 20px;
+            border-bottom: 1px solid #2d3148;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: #fff;
+        }
+        .logo-text h5 { margin: 0; font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
+        .logo-text span { font-size: 11px; color: #818cf8; }
+
+        .sidebar-nav { padding: 16px 12px; flex: 1; }
+        .nav-label { font-size: 10px; color: #475569; text-transform: uppercase; font-weight: 600; padding: 0 12px; margin: 12px 0 6px; letter-spacing: .08em; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 2px;
+            transition: all .15s;
+        }
+        .nav-item:hover { background: #252840; color: #e2e8f0; }
+        .nav-item.active { background: #3730a3; color: #fff; }
+        .nav-item i { font-size: 16px; width: 18px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #2d3148;
+            font-size: 12px;
+        }
+        .sidebar-footer .footer-label { color: #475569; }
+        .sidebar-footer .footer-val { color: #94a3b8; margin-top: 2px; }
+
+        /* ── Main ── */
+        .main { margin-left: 240px; padding: 28px; min-height: 100vh; }
+
+        .page-header { margin-bottom: 24px; }
+        .page-header h4 { font-weight: 700; color: #fff; font-size: 22px; }
+        .page-header p { color: #64748b; font-size: 14px; margin-top: 2px; }
+
+        /* ── KPI Cards ── */
+        .kpi-card {
+            background: #1e2130;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3148;
+        }
+        .kpi-card .kpi-label { color: #64748b; font-size: 13px; margin-bottom: 8px; }
+        .kpi-card .kpi-value { font-size: 26px; font-weight: 700; color: #fff; }
+        .kpi-card .kpi-sub { color: #64748b; font-size: 12px; margin-top: 4px; }
+        .kpi-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+
+        /* ── Chart Cards ── */
+        .chart-card {
+            background: #1e2130;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3148;
+        }
+        .chart-card h6 { color: #e2e8f0; font-weight: 600; margin-bottom: 16px; font-size: 14px; }
+
+        /* ── Table ── */
+        .table-card {
+            background: #1e2130;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2d3148;
+        }
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl thead th {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            padding: 10px 12px;
+            border-bottom: 1px solid #2d3148;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+        .tbl thead th:hover { color: #cbd5e1; }
+        .tbl tbody td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #1a1d29;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+        .tbl tbody tr:hover td { background: #252840; }
+        .tbl tbody tr:last-child td { border-bottom: none; }
+
+        /* ── Filter Bar ── */
+        .filter-bar {
+            background: #1e2130;
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid #2d3148;
+            margin-bottom: 16px;
+        }
+        .form-control-dark, .form-select-dark {
+            background: #0f1117 !important;
+            border: 1px solid #2d3148 !important;
+            color: #e2e8f0 !important;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+        .form-control-dark:focus, .form-select-dark:focus {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99,102,241,.2) !important;
+        }
+        .form-control-dark::placeholder { color: #475569; }
+        .form-select-dark option { background: #1a1d29; }
+
+        /* ── Badges ── */
+        .badge-type { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .badge-reels   { background: #7c3aed22; color: #a78bfa; }
+        .badge-image   { background: #0369a122; color: #38bdf8; }
+        .badge-carousel { background: #15803d22; color: #4ade80; }
+
+        /* ── Page sections ── */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* ── Loading ── */
+        .loading-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #0f1117;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+        }
+        .spinner-border { color: #6366f1; }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f1117; }
+        ::-webkit-scrollbar-thumb { background: #2d3148; border-radius: 4px; }
+
+        .table-scroll { overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+<!-- 로딩 -->
+<div class="loading-overlay" id="loading">
+    <div class="text-center">
+        <div class="spinner-border mb-3" style="width:3rem;height:3rem;"></div>
+        <div style="color:#64748b;font-size:14px;">데이터 불러오는 중...</div>
+    </div>
+</div>
+
+<!-- 사이드바 -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon"><i class="bi bi-instagram"></i></div>
+        <div class="logo-text">
+            <h5>콘텐츠 대시보드</h5>
+            <span>Instagram Analytics</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-label">메뉴</div>
+        <div class="nav-item active" data-page="dashboard" onclick="showPage(this)">
+            <i class="bi bi-grid-1x2"></i>
+            <span>대시보드</span>
+        </div>
+        <div class="nav-item" data-page="contents" onclick="showPage(this)">
+            <i class="bi bi-table"></i>
+            <span>콘텐츠 목록</span>
+        </div>
+        <div class="nav-item" data-page="analytics" onclick="showPage(this)">
+            <i class="bi bi-bar-chart-line"></i>
+            <span>상세 분석</span>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="footer-label">마지막 업데이트</div>
+        <div class="footer-val" id="lastUpdate">-</div>
+    </div>
+</div>
+
+<!-- 메인 콘텐츠 -->
+<div class="main">
+
+    <!-- ① 대시보드 -->
+    <div class="page-section active" id="page-dashboard">
+        <div class="page-header">
+            <h4>대시보드</h4>
+            <p>인스타그램 콘텐츠 전체 성과 요약</p>
+        </div>
+
+        <!-- KPI 카드 -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">총 게시물</div>
+                            <div class="kpi-value" id="kpi-total">-</div>
+                            <div class="kpi-sub">전체 콘텐츠 수</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#6366f122;color:#6366f1;">
+                            <i class="bi bi-image"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">총 도달수</div>
+                            <div class="kpi-value" id="kpi-reach">-</div>
+                            <div class="kpi-sub">누적 도달 계정</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#0ea5e922;color:#0ea5e9;">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">총 노출수</div>
+                            <div class="kpi-value" id="kpi-impression">-</div>
+                            <div class="kpi-sub">누적 노출 횟수</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#f59e0b22;color:#f59e0b;">
+                            <i class="bi bi-eye"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">평균 반응률</div>
+                            <div class="kpi-value" id="kpi-engagement">-</div>
+                            <div class="kpi-sub">콘텐츠 평균</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#10b98122;color:#10b981;">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 차트 Row 1 -->
+        <div class="row g-3 mb-3">
+            <div class="col-lg-8">
+                <div class="chart-card">
+                    <h6>도달수 Top 10 콘텐츠</h6>
+                    <canvas id="chartTopReach" height="220"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <h6>발행형태 비율</h6>
+                    <canvas id="chartTypeRatio" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 차트 Row 2 -->
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h6>카테고리별 평균 도달수</h6>
+                    <canvas id="chartCategoryReach" height="220"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h6>발행형태별 평균 반응률</h6>
+                    <canvas id="chartTypeEngagement" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ② 콘텐츠 목록 -->
+    <div class="page-section" id="page-contents">
+        <div class="page-header">
+            <h4>콘텐츠 목록</h4>
+            <p>전체 게시물 목록 — 정렬 및 필터 가능</p>
+        </div>
+
+        <div class="filter-bar">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-3">
+                    <input type="text" class="form-control form-control-dark" id="searchInput" placeholder="🔍  콘텐츠명 검색...">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-dark" id="filterType">
+                        <option value="">발행형태 전체</option>
+                        <option>Reels</option>
+                        <option>Image</option>
+                        <option>Carousel</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-dark" id="filterCategory">
+                        <option value="">카테고리 전체</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-dark" id="filterEvent">
+                        <option value="">이벤트 전체</option>
+                        <option value="O">이벤트 O</option>
+                        <option value="X">이벤트 X</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select form-select-dark" id="sortBy">
+                        <option value="no">번호순</option>
+                        <option value="reach">도달수 높은순</option>
+                        <option value="impression">노출수 높은순</option>
+                        <option value="engagement">반응률 높은순</option>
+                        <option value="likes">좋아요 높은순</option>
+                        <option value="saves">저장 높은순</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-sm w-100" style="background:#6366f1;color:#fff;border-radius:8px;" onclick="resetFilters()">초기화</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-scroll">
+                <table class="tbl" id="contentTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable('no')">No. ↕</th>
+                            <th onclick="sortTable('date')">업로드일 ↕</th>
+                            <th>콘텐츠</th>
+                            <th>카테고리</th>
+                            <th>형태</th>
+                            <th>이벤트</th>
+                            <th onclick="sortTable('reach')">도달수 ↕</th>
+                            <th onclick="sortTable('impression')">노출수 ↕</th>
+                            <th onclick="sortTable('likes')">좋아요 ↕</th>
+                            <th onclick="sortTable('comments')">댓글 ↕</th>
+                            <th onclick="sortTable('saves')">저장 ↕</th>
+                            <th onclick="sortTable('engagement')">반응률 ↕</th>
+                            <th>링크</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+            <div id="tableCount" style="color:#64748b;font-size:13px;margin-top:14px;"></div>
+        </div>
+    </div>
+
+    <!-- ③ 상세 분석 -->
+    <div class="page-section" id="page-analytics">
+        <div class="page-header">
+            <h4>상세 분석</h4>
+            <p>시기별, 유형별 성과 심층 분석</p>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="chart-card">
+                    <h6>콘텐츠별 도달수 전체 추이</h6>
+                    <canvas id="chartTimeline" height="130"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <h6>발행형태별 총 도달수</h6>
+                    <canvas id="chartTypeTotal" height="260"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <h6>이벤트 여부별 평균 도달수</h6>
+                    <canvas id="chartEventReach" height="260"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <h6>좋아요 Top 5</h6>
+                    <canvas id="chartTopLikes" height="260"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ── 설정 ──────────────────────────────────────────────
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1tFfv9xPNslS13V6m6vvxDaX8bbRe6a2BXL96QxSqh28/export?format=csv&gid=1218514793';
+
+// ── 유틸 ──────────────────────────────────────────────
+const toNum = v => parseFloat(String(v||'').replace(/,/g,'').replace(/%/g,'')) || 0;
+const fmt   = n => Math.round(n).toLocaleString('ko-KR');
+const COLORS = ['#6366f1','#8b5cf6','#ec4899','#0ea5e9','#10b981','#f59e0b','#ef4444','#14b8a6','#f97316','#84cc16'];
+
+let allData = [];
+let charts  = {};
+let sortDir = {};  // 컬럼별 정렬 방향
+
+// ── 페이지 전환 ───────────────────────────────────────
+function showPage(el) {
+    document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + el.dataset.page).classList.add('active');
+    el.classList.add('active');
+}
+
+// ── 데이터 로드 ───────────────────────────────────────
+function loadData() {
+    Papa.parse(SHEET_URL, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete(res) {
+            allData = res.data.filter(r => r['No.'] && r['No.'].trim() !== '');
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('ko-KR');
+            buildDashboard();
+            buildTable();
+            buildAnalytics();
+        },
+        error() {
+            document.getElementById('loading').innerHTML =
+                '<div style="color:#ef4444;text-align:center">데이터 로딩 실패.<br>구글시트 공유 설정을 확인해주세요.</div>';
+        }
+    });
+}
+
+// ── 차트 공통 옵션 ────────────────────────────────────
+const darkTick = { color: '#94a3b8', font: { size: 11 } };
+const darkGrid = { color: '#2d3148' };
+
+// ── 대시보드 ──────────────────────────────────────────
+function buildDashboard() {
+    const total  = allData.length;
+    const totR   = allData.reduce((s,r) => s + toNum(r['도달수']), 0);
+    const totI   = allData.reduce((s,r) => s + toNum(r['노출수']), 0);
+    const avgEng = allData.reduce((s,r) => s + toNum(r['총 반응률']), 0) / total;
+
+    document.getElementById('kpi-total').textContent      = total + '개';
+    document.getElementById('kpi-reach').textContent      = fmt(totR);
+    document.getElementById('kpi-impression').textContent = fmt(totI);
+    document.getElementById('kpi-engagement').textContent = avgEng.toFixed(2) + '%';
+
+    // Top 10 도달수
+    const top10 = [...allData].sort((a,b) => toNum(b['도달수']) - toNum(a['도달수'])).slice(0,10);
+    mk('chartTopReach', 'bar', {
+        labels: top10.map(r => r['콘텐츠'].length > 14 ? r['콘텐츠'].slice(0,14)+'…' : r['콘텐츠']),
+        datasets: [{ label:'도달수', data: top10.map(r => toNum(r['도달수'])), backgroundColor: COLORS, borderRadius: 6 }]
+    }, {
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: darkTick, grid: { color: '#1e2130' } },
+            y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
+        }
+    });
+
+    // 발행형태 도넛
+    const typeCount = group(allData, '발행형태', () => 1, (a,b) => a+b, 0);
+    mk('chartTypeRatio', 'doughnut', {
+        labels: Object.keys(typeCount),
+        datasets: [{ data: Object.values(typeCount), backgroundColor: COLORS, borderWidth: 0, hoverOffset: 6 }]
+    }, { plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } } } });
+
+    // 카테고리별 평균 도달수
+    const catAvg = groupAvg(allData, '카테고리', '도달수');
+    mk('chartCategoryReach', 'bar', {
+        labels: catAvg.map(c => c.key),
+        datasets: [{ label:'평균 도달수', data: catAvg.map(c => c.avg), backgroundColor: '#0ea5e9', borderRadius: 6 }]
+    }, {
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid },
+            y: { ticks: darkTick, grid: { color: '#1e2130' } }
+        }
+    });
+
+    // 발행형태별 평균 반응률
+    const typeEng = groupAvg(allData, '발행형태', '총 반응률');
+    mk('chartTypeEngagement', 'bar', {
+        labels: typeEng.map(t => t.key),
+        datasets: [{ label:'평균 반응률(%)', data: typeEng.map(t => t.avg), backgroundColor: '#10b981', borderRadius: 6 }]
+    }, {
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: darkTick, grid: { color: '#1e2130' } },
+            y: { ticks: { ...darkTick, callback: v => v.toFixed(2)+'%' }, grid: darkGrid }
+        }
+    });
+}
+
+// ── 테이블 ────────────────────────────────────────────
+function buildTable() {
+    const cats = [...new Set(allData.map(r => r['카테고리']).filter(Boolean))].sort();
+    const catSel = document.getElementById('filterCategory');
+    cats.forEach(c => { const o = document.createElement('option'); o.value = o.textContent = c; catSel.appendChild(o); });
+
+    ['searchInput','filterType','filterCategory','filterEvent','sortBy'].forEach(id => {
+        document.getElementById(id).addEventListener('input',  renderTable);
+        document.getElementById(id).addEventListener('change', renderTable);
+    });
+    renderTable();
+}
+
+function sortTable(col) {
+    sortDir[col] = !sortDir[col];
+    document.getElementById('sortBy').value = 'no';  // 드롭다운 리셋
+    const dir = sortDir[col] ? 1 : -1;
+    const colMap = { no:'No.', date:'업로드 일자', reach:'도달수', impression:'노출수', likes:'좋아요', comments:'댓글', saves:'저장', engagement:'총 반응률' };
+    const field = colMap[col];
+    allData.sort((a,b) => {
+        const av = col === 'date' ? new Date(a[field]) : toNum(a[field]);
+        const bv = col === 'date' ? new Date(b[field]) : toNum(b[field]);
+        return (av > bv ? 1 : -1) * dir;
+    });
+    renderTable();
+}
+
+function renderTable() {
+    const search   = document.getElementById('searchInput').value.toLowerCase();
+    const typeF    = document.getElementById('filterType').value;
+    const catF     = document.getElementById('filterCategory').value;
+    const eventF   = document.getElementById('filterEvent').value;
+    const sortBy   = document.getElementById('sortBy').value;
+
+    let data = allData.filter(r => {
+        if (search && !r['콘텐츠'].toLowerCase().includes(search)) return false;
+        if (typeF  && r['발행형태']    !== typeF)  return false;
+        if (catF   && r['카테고리']    !== catF)   return false;
+        if (eventF && r['이벤트 여부'] !== eventF) return false;
+        return true;
+    });
+
+    const sortMap = { reach:'도달수', impression:'노출수', engagement:'총 반응률', likes:'좋아요', saves:'저장' };
+    if (sortBy !== 'no') data = [...data].sort((a,b) => toNum(b[sortMap[sortBy]]) - toNum(a[sortMap[sortBy]]));
+
+    const badgeClass = t => t==='Reels'?'badge-reels':t==='Image'?'badge-image':'badge-carousel';
+    document.getElementById('tableBody').innerHTML = data.map(r => `
+        <tr>
+            <td style="color:#475569">${r['No.']}</td>
+            <td style="white-space:nowrap">${r['업로드 일자']||'-'}</td>
+            <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r['콘텐츠']}">${r['콘텐츠']||'-'}</td>
+            <td style="color:#94a3b8">${r['카테고리']||'-'}</td>
+            <td><span class="badge-type ${badgeClass(r['발행형태'])}">${r['발행형태']||'-'}</span></td>
+            <td style="color:${r['이벤트 여부']==='O'?'#4ade80':'#475569'}">${r['이벤트 여부']||'-'}</td>
+            <td style="color:#60a5fa;font-weight:600">${fmt(toNum(r['도달수']))}</td>
+            <td>${fmt(toNum(r['노출수']))}</td>
+            <td>${fmt(toNum(r['좋아요']))}</td>
+            <td>${fmt(toNum(r['댓글']))}</td>
+            <td>${fmt(toNum(r['저장']))}</td>
+            <td>${toNum(r['총 반응률']).toFixed(2)}%</td>
+            <td>${r['링크']?`<a href="https://${r['링크']}" target="_blank" style="color:#6366f1"><i class="bi bi-box-arrow-up-right"></i></a>`:'-'}</td>
+        </tr>`).join('');
+
+    document.getElementById('tableCount').textContent = `총 ${data.length}개 콘텐츠`;
+}
+
+function resetFilters() {
+    ['searchInput'].forEach(id => document.getElementById(id).value = '');
+    ['filterType','filterCategory','filterEvent'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('sortBy').value = 'no';
+    renderTable();
+}
+
+// ── 상세 분석 ─────────────────────────────────────────
+function buildAnalytics() {
+    const byDate = [...allData].sort((a,b) => new Date(a['업로드 일자']) - new Date(b['업로드 일자']));
+    mk('chartTimeline', 'line', {
+        labels: byDate.map(r => r['업로드 일자']),
+        datasets: [
+            { label:'도달수', data: byDate.map(r => toNum(r['도달수'])), borderColor:'#6366f1', backgroundColor:'#6366f120', fill:true, tension:.4, pointRadius:3 },
+            { label:'노출수', data: byDate.map(r => toNum(r['노출수'])), borderColor:'#0ea5e9', backgroundColor:'#0ea5e920', fill:true, tension:.4, pointRadius:3 }
+        ]
+    }, {
+        plugins: { legend: { labels: { color:'#94a3b8' } } },
+        scales: {
+            x: { ticks: { ...darkTick, maxTicksLimit: 15 }, grid: darkGrid },
+            y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
+        }
+    });
+
+    // 발행형태별 총 도달수
+    const typeTotal = group(allData, '발행형태', r => toNum(r['도달수']), (a,b) => a+b, 0);
+    mk('chartTypeTotal', 'bar', {
+        labels: Object.keys(typeTotal),
+        datasets: [{ label:'총 도달수', data: Object.values(typeTotal), backgroundColor: COLORS, borderRadius: 8 }]
+    }, {
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
+        }
+    });
+
+    // 이벤트 여부별 평균 도달수
+    const evO = allData.filter(r => r['이벤트 여부']==='O');
+    const evX = allData.filter(r => r['이벤트 여부']==='X');
+    const avg = arr => arr.length ? arr.reduce((s,r) => s+toNum(r['도달수']),0)/arr.length : 0;
+    mk('chartEventReach', 'bar', {
+        labels: ['이벤트 O', '이벤트 X'],
+        datasets: [{ label:'평균 도달수', data: [avg(evO), avg(evX)], backgroundColor: ['#4ade80','#64748b'], borderRadius: 8 }]
+    }, {
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
+        }
+    });
+
+    // 좋아요 Top 5
+    const top5 = [...allData].sort((a,b) => toNum(b['좋아요']) - toNum(a['좋아요'])).slice(0,5);
+    mk('chartTopLikes', 'bar', {
+        labels: top5.map(r => r['콘텐츠'].length > 12 ? r['콘텐츠'].slice(0,12)+'…' : r['콘텐츠']),
+        datasets: [{ label:'좋아요', data: top5.map(r => toNum(r['좋아요'])), backgroundColor: '#ec4899', borderRadius: 8 }]
+    }, {
+        indexAxis: 'y',
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid },
+            y: { ticks: darkTick, grid: { color:'#1e2130' } }
+        }
+    });
+}
+
+// ── 헬퍼 ──────────────────────────────────────────────
+function mk(id, type, data, options) {
+    if (charts[id]) charts[id].destroy();
+    charts[id] = new Chart(document.getElementById(id), {
+        type,
+        data,
+        options: { responsive: true, ...options }
+    });
+}
+
+function group(arr, key, valFn, reduceFn, init) {
+    const map = {};
+    arr.forEach(r => {
+        const k = r[key] || '기타';
+        map[k] = reduceFn(map[k] !== undefined ? map[k] : init, valFn(r));
+    });
+    return map;
+}
+
+function groupAvg(arr, key, valKey) {
+    const sum = {}, cnt = {};
+    arr.forEach(r => {
+        const k = r[key] || '기타';
+        sum[k] = (sum[k]||0) + toNum(r[valKey]);
+        cnt[k] = (cnt[k]||0) + 1;
+    });
+    return Object.keys(sum).map(k => ({ key: k, avg: sum[k]/cnt[k] })).sort((a,b) => b.avg - a.avg);
+}
+
+// ── 시작 ──────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
