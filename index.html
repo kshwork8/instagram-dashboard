@@ -464,7 +464,11 @@ function loadData() {
         header: true,
         skipEmptyLines: true,
         complete(res) {
-            allData = res.data.filter(r => r['No.'] && r['No.'].trim() !== '');
+            console.log('📋 첫 번째 행 컬럼명:', Object.keys(res.data[0] || {}));
+            console.log('📊 첫 번째 데이터:', res.data[0]);
+            console.log('📦 전체 행 수:', res.data.length);
+            allData = res.data.filter(r => Object.values(r).some(v => v && String(v).trim() !== ''));
+            console.log('✅ 필터 후 행 수:', allData.length);
             document.getElementById('loading').style.display = 'none';
             document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('ko-KR');
             buildDashboard();
