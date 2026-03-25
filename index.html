@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>네쏘 데이터</title>
+    <title>Data Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -199,7 +199,7 @@
     <div class="sidebar-logo">
         <div class="logo-icon"><i class="bi bi-instagram"></i></div>
         <div class="logo-text">
-            <h5>네쏘 데이터</h5>
+            <h5>Data Manager</h5>
             <span>Nespresso Analytics</span>
         </div>
     </div>
@@ -221,7 +221,7 @@
         <div class="nav-label" style="margin-top:16px;">카카오</div>
         <div class="nav-item" data-page="kakao" onclick="showPage(this)">
             <i class="bi bi-chat-fill" style="color:#FEE500;"></i>
-            <span>카카오 대시보드</span>
+            <span>대시보드</span>
         </div>
         <div class="nav-item" data-page="kakao-list" onclick="showPage(this)">
             <i class="bi bi-list-ul"></i>
@@ -458,7 +458,7 @@
     <!-- ④ 카카오 대시보드 -->
     <div class="page-section" id="page-kakao">
         <div class="page-header">
-            <h4>카카오 대시보드</h4>
+            <h4>대시보드</h4>
             <p>카카오 푸시메시지 성과 요약</p>
         </div>
 
@@ -956,7 +956,7 @@ function buildKakaoMonthFilter() {
     const months = [...new Set(kakaoData.map(r => r['발송날짜'].slice(0,7)))].sort();
     const container = document.getElementById('kakaoMonthBtns');
     if (!container) return;
-    const btnStyle = (active) => `padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid ${active?'#FCD34D':'#E2E8F0'};transition:all .15s;background:${active?'#FFFBEB':'#fff'};color:${active?'#D97706':'#64748B'}`;
+    const btnStyle = (active) => `padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;background:${active?'#FEE500':'#252840'};color:${active?'#3a1a00':'#94a3b8'}`;
 
     container.innerHTML = '';
     const allBtn = document.createElement('button');
