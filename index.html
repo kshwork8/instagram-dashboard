@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram 콘텐츠 대시보드</title>
+    <title>네쏘 데이터</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -193,13 +193,13 @@
     <div class="sidebar-logo">
         <div class="logo-icon"><i class="bi bi-instagram"></i></div>
         <div class="logo-text">
-            <h5>콘텐츠 대시보드</h5>
-            <span>Instagram Analytics</span>
+            <h5>네쏘 데이터</h5>
+            <span>Nespresso Analytics</span>
         </div>
     </div>
 
     <nav class="sidebar-nav">
-        <div class="nav-label">메뉴</div>
+        <div class="nav-label">인스타그램</div>
         <div class="nav-item active" data-page="dashboard" onclick="showPage(this)">
             <i class="bi bi-grid-1x2"></i>
             <span>대시보드</span>
@@ -211,6 +211,15 @@
         <div class="nav-item" data-page="analytics" onclick="showPage(this)">
             <i class="bi bi-bar-chart-line"></i>
             <span>상세 분석</span>
+        </div>
+        <div class="nav-label" style="margin-top:16px;">카카오</div>
+        <div class="nav-item" data-page="kakao" onclick="showPage(this)">
+            <i class="bi bi-chat-fill" style="color:#FEE500;"></i>
+            <span>카카오 대시보드</span>
+        </div>
+        <div class="nav-item" data-page="kakao-list" onclick="showPage(this)">
+            <i class="bi bi-list-ul"></i>
+            <span>발송 목록</span>
         </div>
     </nav>
 
@@ -384,7 +393,6 @@
                 <table class="tbl" id="contentTable">
                     <thead>
                         <tr>
-                            <th onclick="sortTable('no')">No. ↕</th>
                             <th onclick="sortTable('date')">업로드일 ↕</th>
                             <th>콘텐츠</th>
                             <th>카테고리</th>
@@ -441,12 +449,166 @@
         </div>
     </div>
 
+    <!-- ④ 카카오 대시보드 -->
+    <div class="page-section" id="page-kakao">
+        <div class="page-header">
+            <h4>카카오 대시보드</h4>
+            <p>카카오 푸시메시지 성과 요약</p>
+        </div>
+
+        <!-- 월별 필터 -->
+        <div class="filter-bar mb-4" style="padding:12px 20px;">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span style="color:#64748b;font-size:13px;">월별 필터:</span>
+                <div id="kakaoMonthBtns" class="d-flex gap-2 flex-wrap"></div>
+            </div>
+        </div>
+
+        <!-- KPI 카드 -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">총 발송건수</div>
+                            <div class="kpi-value" id="kkakao-total">-</div>
+                            <div class="kpi-sub">전체 캠페인 수</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#FEE50022;color:#FEE500;">
+                            <i class="bi bi-chat-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">누적 발송 수</div>
+                            <div class="kpi-value" id="kkakao-sent">-</div>
+                            <div class="kpi-sub">총 발송 메시지</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#6366f122;color:#6366f1;">
+                            <i class="bi bi-send"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">평균 열람률</div>
+                            <div class="kpi-value" id="kkakao-openrate">-</div>
+                            <div class="kpi-sub">캠페인 평균</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#f59e0b22;color:#f59e0b;">
+                            <i class="bi bi-envelope-open"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="kpi-label">평균 클릭률</div>
+                            <div class="kpi-value" id="kkakao-clickrate">-</div>
+                            <div class="kpi-sub">캠페인 평균</div>
+                        </div>
+                        <div class="kpi-icon" style="background:#10b98122;color:#10b981;">
+                            <i class="bi bi-cursor"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 차트 -->
+        <div class="row g-3 mb-3">
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <h6>월별 발송건수 추이</h6>
+                    <canvas id="chartKakaoTrend" height="220"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <h6>카테고리별 평균 열람률</h6>
+                    <canvas id="chartKakaoOpenByCat" height="220"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <h6>클릭률 Top 10 캠페인</h6>
+                    <canvas id="chartKakaoTopClick" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⑤ 카카오 발송 목록 -->
+    <div class="page-section" id="page-kakao-list">
+        <div class="page-header">
+            <h4>카카오 발송 목록</h4>
+            <p>전체 발송 내역 — 정렬 및 필터 가능</p>
+        </div>
+
+        <div class="filter-bar">
+            <div class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <input type="text" class="form-control form-control-dark" id="kakaoSearchInput" placeholder="🔍  캠페인명 검색...">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select form-select-dark" id="kakaoFilterCat">
+                        <option value="">카테고리 전체</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select form-select-dark" id="kakaoSortBy">
+                        <option value="date">최신순</option>
+                        <option value="sent">발송수 높은순</option>
+                        <option value="openrate">열람률 높은순</option>
+                        <option value="clickrate">클릭률 높은순</option>
+                        <option value="click">클릭수 높은순</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-sm w-100" style="background:#FEE500;color:#3a1a00;border-radius:8px;font-weight:600;" onclick="resetKakaoFilters()">초기화</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-card">
+            <div class="table-scroll">
+                <table class="tbl">
+                    <thead>
+                        <tr>
+                            <th>발송날짜</th>
+                            <th>발송시간</th>
+                            <th>캠페인명</th>
+                            <th>카테고리</th>
+                            <th>발송 수</th>
+                            <th>열람 수</th>
+                            <th>열람률</th>
+                            <th>클릭 수</th>
+                            <th>클릭률</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kakaoTableBody"></tbody>
+                </table>
+            </div>
+            <div id="kakaoTableCount" style="color:#64748b;font-size:13px;margin-top:14px;"></div>
+        </div>
+    </div>
+
 </div><!-- /main -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ── 설정 ──────────────────────────────────────────────
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9ohoWUMV3LqnVRPSqBn6Q4je6w57igN8z2n1QSrXOnT5zt3Dnevdk6AcX5RhBBULF-kUzXQOH_1_D/pub?gid=1218514793&single=true&output=csv';
+const KAKAO_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9ohoWUMV3LqnVRPSqBn6Q4je6w57igN8z2n1QSrXOnT5zt3Dnevdk6AcX5RhBBULF-kUzXQOH_1_D/pub?gid=2061098080&single=true&output=csv';
 
 // ── 유틸 ──────────────────────────────────────────────
 const toNum = v => parseFloat(String(v||'').replace(/,/g,'').replace(/%/g,'')) || 0;
@@ -454,9 +616,11 @@ const fmt   = n => Math.round(n).toLocaleString('ko-KR');
 const COLORS = ['#6366f1','#8b5cf6','#ec4899','#0ea5e9','#10b981','#f59e0b','#ef4444','#14b8a6','#f97316','#84cc16'];
 
 let allData = [];
+let kakaoData = [];
 let charts  = {};
 let sortDir = {};
 let selectedMonth = 'all';
+let selectedKakaoMonth = 'all';
 
 // ── 페이지 전환 ───────────────────────────────────────
 function showPage(el) {
@@ -641,7 +805,6 @@ function renderTable() {
     const badgeClass = t => t==='Reels'?'badge-reels':t==='Image'?'badge-image':'badge-carousel';
     document.getElementById('tableBody').innerHTML = data.map(r => `
         <tr>
-            <td style="color:#475569">${r['No.']}</td>
             <td style="white-space:nowrap">${r['업로드 일자']||'-'}</td>
             <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r['콘텐츠']}">${r['콘텐츠']||'-'}</td>
             <td style="color:#94a3b8">${r['카테고리']||'-'}</td>
@@ -755,8 +918,182 @@ function groupAvg(arr, key, valKey) {
     return Object.keys(sum).map(k => ({ key: k, avg: sum[k]/cnt[k] })).sort((a,b) => b.avg - a.avg);
 }
 
+// ── 카카오 데이터 로드 ────────────────────────────────
+function loadKakaoData() {
+    Papa.parse(KAKAO_URL, {
+        download: true,
+        header: false,
+        skipEmptyLines: true,
+        complete(res) {
+            const headerIdx = res.data.findIndex(row =>
+                row.some(cell => cell === '발송날짜' || cell === '캠페인명')
+            );
+            if (headerIdx === -1) return;
+            const headers = res.data[headerIdx];
+            kakaoData = res.data.slice(headerIdx + 1)
+                .filter(row => row.some(v => v && String(v).trim() !== ''))
+                .map(row => {
+                    const obj = {};
+                    headers.forEach((h, i) => { obj[h] = row[i] || ''; });
+                    return obj;
+                })
+                .filter(r => /^\d{4}-\d{2}-\d{2}/.test(r['발송날짜'] || ''));
+            buildKakaoMonthFilter();
+            buildKakaoDashboard();
+            buildKakaoList();
+        }
+    });
+}
+
+// ── 카카오 월별 필터 ────────────────────────────────
+function buildKakaoMonthFilter() {
+    const months = [...new Set(kakaoData.map(r => r['발송날짜'].slice(0,7)))].sort();
+    const container = document.getElementById('kakaoMonthBtns');
+    if (!container) return;
+    const btnStyle = (active) => `padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;background:${active?'#FEE500':'#252840'};color:${active?'#3a1a00':'#94a3b8'}`;
+
+    container.innerHTML = '';
+    const allBtn = document.createElement('button');
+    allBtn.textContent = '전체';
+    allBtn.style.cssText = btnStyle(selectedKakaoMonth === 'all');
+    allBtn.onclick = () => { selectedKakaoMonth = 'all'; buildKakaoMonthFilter(); buildKakaoDashboard(); };
+    container.appendChild(allBtn);
+
+    months.forEach(m => {
+        const btn = document.createElement('button');
+        const [, month] = m.split('-');
+        btn.textContent = `${month}월`;
+        btn.style.cssText = btnStyle(selectedKakaoMonth === m);
+        btn.onclick = () => { selectedKakaoMonth = m; buildKakaoMonthFilter(); buildKakaoDashboard(); };
+        container.appendChild(btn);
+    });
+}
+
+// ── 카카오 대시보드 ────────────────────────────────
+function buildKakaoDashboard() {
+    const filtered = selectedKakaoMonth === 'all' ? kakaoData : kakaoData.filter(r => r['발송날짜'].startsWith(selectedKakaoMonth));
+    const total = filtered.length;
+    const totSent = filtered.reduce((s,r) => s + toNum(r['발송 수']), 0);
+    const avgOpen = total > 0 ? filtered.reduce((s,r) => s + toNum(r['열람률']), 0) / total : 0;
+    const avgClick = total > 0 ? filtered.reduce((s,r) => s + toNum(r['클릭률']), 0) / total : 0;
+
+    const el = id => document.getElementById(id);
+    if (el('kkakao-total'))     el('kkakao-total').textContent = total + '건';
+    if (el('kkakao-sent'))      el('kkakao-sent').textContent = fmt(totSent);
+    if (el('kkakao-openrate'))  el('kkakao-openrate').textContent = avgOpen.toFixed(1) + '%';
+    if (el('kkakao-clickrate')) el('kkakao-clickrate').textContent = avgClick.toFixed(1) + '%';
+
+    // 월별 발송건수 추이
+    const byMonth = {};
+    filtered.forEach(r => {
+        const m = r['발송날짜'].slice(0,7);
+        byMonth[m] = (byMonth[m]||0) + 1;
+    });
+    const monthKeys = Object.keys(byMonth).sort();
+    mk('chartKakaoTrend', 'bar', {
+        labels: monthKeys.map(m => m.slice(5)+'월'),
+        datasets: [{ label:'발송건수', data: monthKeys.map(m => byMonth[m]), backgroundColor: '#FEE500', borderRadius: 6 }]
+    }, {
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            y: { ticks: { ...darkTick, stepSize:1 }, grid: darkGrid }
+        }
+    });
+
+    // 카테고리별 평균 열람률
+    const catAvg = groupAvg(filtered, '카테고리', '열람률');
+    mk('chartKakaoOpenByCat', 'bar', {
+        labels: catAvg.map(c => c.key),
+        datasets: [{ label:'평균 열람률(%)', data: catAvg.map(c => c.avg), backgroundColor: '#f59e0b', borderRadius: 6 }]
+    }, {
+        indexAxis: 'y',
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: { ...darkTick, callback: v => v.toFixed(1)+'%' }, grid: darkGrid },
+            y: { ticks: darkTick, grid: { color:'#1e2130' } }
+        }
+    });
+
+    // 클릭률 Top 10
+    const top10 = [...filtered].sort((a,b) => toNum(b['클릭률']) - toNum(a['클릭률'])).slice(0,10);
+    mk('chartKakaoTopClick', 'bar', {
+        labels: top10.map(r => (r['캠페인명']||'').length > 14 ? r['캠페인명'].slice(0,14)+'…' : r['캠페인명']),
+        datasets: [{ label:'클릭률(%)', data: top10.map(r => toNum(r['클릭률'])), backgroundColor: COLORS, borderRadius: 6 }]
+    }, {
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            y: { ticks: { ...darkTick, callback: v => v.toFixed(1)+'%' }, grid: darkGrid }
+        }
+    });
+}
+
+// ── 카카오 발송 목록 ────────────────────────────────
+function buildKakaoList() {
+    const el = id => document.getElementById(id);
+    if (el('kakaoSearchInput')) {
+        ['kakaoSearchInput','kakaoFilterCat','kakaoSortBy'].forEach(id => {
+            el(id).addEventListener('input',  renderKakaoTable);
+            el(id).addEventListener('change', renderKakaoTable);
+        });
+        // 카테고리 옵션 채우기
+        const cats = [...new Set(kakaoData.map(r => r['카테고리']).filter(Boolean))].sort();
+        const sel = el('kakaoFilterCat');
+        cats.forEach(c => { const o = document.createElement('option'); o.value = o.textContent = c; sel.appendChild(o); });
+    }
+    renderKakaoTable();
+}
+
+function renderKakaoTable() {
+    const el = id => document.getElementById(id);
+    const search = (el('kakaoSearchInput')?.value||'').toLowerCase();
+    const catF   = el('kakaoFilterCat')?.value||'';
+    const sortBy = el('kakaoSortBy')?.value||'date';
+
+    let data = kakaoData.filter(r => {
+        if (search && !(r['캠페인명']||'').toLowerCase().includes(search)) return false;
+        if (catF   && r['카테고리'] !== catF) return false;
+        return true;
+    });
+
+    const sortMap = { date:'발송날짜', sent:'발송 수', open:'열람 수', openrate:'열람률', click:'클릭 수', clickrate:'클릭률' };
+    const field = sortMap[sortBy] || '발송날짜';
+    data = [...data].sort((a,b) => {
+        if (sortBy === 'date') return new Date(b['발송날짜']) - new Date(a['발송날짜']);
+        return toNum(b[field]) - toNum(a[field]);
+    });
+
+    const tbody = el('kakaoTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = data.map(r => `
+        <tr>
+            <td style="white-space:nowrap">${r['발송날짜']||'-'}</td>
+            <td style="color:#94a3b8">${r['발송시간']||'-'}</td>
+            <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r['캠페인명']}">${r['캠페인명']||'-'}</td>
+            <td style="color:#94a3b8">${r['카테고리']||'-'}</td>
+            <td style="color:#60a5fa;font-weight:600">${fmt(toNum(r['발송 수']))}</td>
+            <td>${fmt(toNum(r['열람 수']))}</td>
+            <td style="color:#FEE500;font-weight:600">${toNum(r['열람률']).toFixed(1)}%</td>
+            <td>${fmt(toNum(r['클릭 수']))}</td>
+            <td style="color:#10b981;font-weight:600">${toNum(r['클릭률']).toFixed(1)}%</td>
+        </tr>`).join('');
+
+    const cnt = el('kakaoTableCount');
+    if (cnt) cnt.textContent = `총 ${data.length}건`;
+}
+
+function resetKakaoFilters() {
+    const el = id => document.getElementById(id);
+    if (el('kakaoSearchInput')) el('kakaoSearchInput').value = '';
+    if (el('kakaoFilterCat'))   el('kakaoFilterCat').value = '';
+    if (el('kakaoSortBy'))      el('kakaoSortBy').value = 'date';
+    renderKakaoTable();
+}
+
 // ── 시작 ──────────────────────────────────────────────
 loadData();
+loadKakaoData();
 </script>
 </body>
 </html>
