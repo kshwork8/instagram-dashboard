@@ -205,8 +205,12 @@
     </div>
 
     <nav class="sidebar-nav">
+        <div class="nav-item active" data-page="home" onclick="showPage(this)">
+            <i class="bi bi-house"></i>
+            <span>홈</span>
+        </div>
         <div class="nav-label">인스타그램</div>
-        <div class="nav-item active" data-page="dashboard" onclick="showPage(this)">
+        <div class="nav-item" data-page="dashboard" onclick="showPage(this)">
             <i class="bi bi-grid-1x2"></i>
             <span>대시보드</span>
         </div>
@@ -238,8 +242,118 @@
 <!-- 메인 콘텐츠 -->
 <div class="main">
 
+    <!-- ⓪ 홈 -->
+    <div class="page-section active" id="page-home">
+        <div class="page-header">
+            <h4>홈</h4>
+            <p>인스타그램 · 카카오 통합 채널 인사이트</p>
+        </div>
+
+        <!-- 플랫폼 요약 카드 -->
+        <div class="row g-3 mb-4">
+            <!-- 인스타그램 -->
+            <div class="col-lg-6">
+                <div class="chart-card h-100">
+                    <div class="d-flex align-items-center gap-3 pb-3 mb-3" style="border-bottom:1px solid #E2E8F0;">
+                        <div style="width:40px;height:40px;background:linear-gradient(135deg,#818CF8,#A78BFA);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;flex-shrink:0;">
+                            <i class="bi bi-instagram"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;color:#1E293B;font-size:15px;">인스타그램</div>
+                            <div style="font-size:12px;color:#94A3B8;">Instagram Analytics</div>
+                        </div>
+                        <span id="home-insta-badge" style="margin-left:auto;font-size:11px;color:#6366F1;background:#EEF2FF;padding:3px 10px;border-radius:20px;font-weight:600;">-</span>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#94A3B8;margin-bottom:4px;">총 도달수</div>
+                                <div style="font-size:19px;font-weight:700;color:#1E293B;" id="home-insta-reach">-</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#94A3B8;margin-bottom:4px;">총 노출수</div>
+                                <div style="font-size:19px;font-weight:700;color:#1E293B;" id="home-insta-imp">-</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:#EEF2FF;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#818CF8;margin-bottom:4px;">평균 반응률</div>
+                                <div style="font-size:19px;font-weight:700;color:#4F46E5;" id="home-insta-eng">-</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:#F5F3FF;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#A78BFA;margin-bottom:4px;">Reels 비율</div>
+                                <div style="font-size:19px;font-weight:700;color:#7C3AED;" id="home-insta-reels">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 카카오 -->
+            <div class="col-lg-6">
+                <div class="chart-card h-100">
+                    <div class="d-flex align-items-center gap-3 pb-3 mb-3" style="border-bottom:1px solid #E2E8F0;">
+                        <div style="width:40px;height:40px;background:linear-gradient(135deg,#FBBF24,#FDE68A);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#78350F;font-size:18px;flex-shrink:0;">
+                            <i class="bi bi-chat-fill"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;color:#1E293B;font-size:15px;">카카오</div>
+                            <div style="font-size:12px;color:#94A3B8;">KakaoTalk Push Message</div>
+                        </div>
+                        <span id="home-kakao-badge" style="margin-left:auto;font-size:11px;color:#D97706;background:#FFFBEB;padding:3px 10px;border-radius:20px;font-weight:600;">-</span>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#94A3B8;margin-bottom:4px;">누적 발송 수</div>
+                                <div style="font-size:19px;font-weight:700;color:#1E293B;" id="home-kakao-sent">-</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#94A3B8;margin-bottom:4px;">누적 열람 수</div>
+                                <div style="font-size:19px;font-weight:700;color:#1E293B;" id="home-kakao-open">-</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:#FFFBEB;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#D97706;margin-bottom:4px;">평균 열람률</div>
+                                <div style="font-size:19px;font-weight:700;color:#B45309;" id="home-kakao-openrate">-</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:#D1FAE5;border-radius:10px;padding:14px 16px;">
+                                <div style="font-size:11px;color:#059669;margin-bottom:4px;">평균 클릭률</div>
+                                <div style="font-size:19px;font-weight:700;color:#047857;" id="home-kakao-clickrate">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 인사이트 차트 -->
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h6>인스타그램 — 도달수 Top 5</h6>
+                    <canvas id="chartHomeInstaTop" height="200"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <h6>카카오 — 클릭률 Top 5 캠페인</h6>
+                    <canvas id="chartHomeKakaoTop" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ① 대시보드 -->
-    <div class="page-section active" id="page-dashboard">
+    <div class="page-section" id="page-dashboard">
         <div class="page-header">
             <h4>대시보드</h4>
             <p>인스타그램 콘텐츠 전체 성과 요약</p>
@@ -627,6 +741,10 @@ let charts  = {};
 let sortDir = {};
 let selectedMonth = 'all';
 let selectedKakaoMonth = 'all';
+let dataReady = { insta: false, kakao: false };
+function tryBuildHome() {
+    if (dataReady.insta && dataReady.kakao) buildHome();
+}
 
 // ── 페이지 전환 ───────────────────────────────────────
 function showPage(el) {
@@ -663,6 +781,8 @@ function loadData() {
                 .filter(r => /^\d{4}-\d{2}-\d{2}/.test(r['업로드 일자'] || ''));
             document.getElementById('loading').style.display = 'none';
             document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('ko-KR');
+            dataReady.insta = true;
+            tryBuildHome();
             buildMonthFilter();
             buildDashboard();
             buildTable();
@@ -944,6 +1064,8 @@ function loadKakaoData() {
                     return obj;
                 })
                 .filter(r => /^\d{4}-\d{2}-\d{2}/.test(r['발송날짜'] || ''));
+            dataReady.kakao = true;
+            tryBuildHome();
             buildKakaoMonthFilter();
             buildKakaoDashboard();
             buildKakaoList();
@@ -1095,6 +1217,67 @@ function resetKakaoFilters() {
     if (el('kakaoFilterCat'))   el('kakaoFilterCat').value = '';
     if (el('kakaoSortBy'))      el('kakaoSortBy').value = 'date';
     renderKakaoTable();
+}
+
+// ── 홈 (통합 인사이트) ─────────────────────────────────
+function buildHome() {
+    const el = id => document.getElementById(id);
+
+    // 인스타그램 요약
+    const iTotal = allData.length;
+    const iReach = allData.reduce((s,r) => s + toNum(r['도달수']), 0);
+    const iImp   = allData.reduce((s,r) => s + toNum(r['노출수']), 0);
+    const iEng   = iTotal > 0 ? allData.reduce((s,r) => s + toNum(r['총 반응률']), 0) / iTotal : 0;
+    const iReels = iTotal > 0 ? Math.round(allData.filter(r => r['발행형태'] === 'Reels').length / iTotal * 100) : 0;
+
+    el('home-insta-badge').textContent  = iTotal + '개';
+    el('home-insta-reach').textContent  = fmt(iReach);
+    el('home-insta-imp').textContent    = fmt(iImp);
+    el('home-insta-eng').textContent    = iEng.toFixed(2) + '%';
+    el('home-insta-reels').textContent  = iReels + '%';
+
+    // 카카오 요약
+    const kTotal     = kakaoData.length;
+    const kSent      = kakaoData.reduce((s,r) => s + toNum(r['발송 수']), 0);
+    const kOpenTot   = kakaoData.reduce((s,r) => s + toNum(r['열람 수']), 0);
+    const kOpenRate  = kTotal > 0 ? kakaoData.reduce((s,r) => s + toNum(r['열람률']), 0) / kTotal : 0;
+    const kClickRate = kTotal > 0 ? kakaoData.reduce((s,r) => s + toNum(r['클릭률']), 0) / kTotal : 0;
+
+    el('home-kakao-badge').textContent     = kTotal + '건';
+    el('home-kakao-sent').textContent      = fmt(kSent);
+    el('home-kakao-open').textContent      = fmt(kOpenTot);
+    el('home-kakao-openrate').textContent  = kOpenRate.toFixed(1) + '%';
+    el('home-kakao-clickrate').textContent = kClickRate.toFixed(1) + '%';
+
+    // 인스타 도달수 Top 5
+    const top5i = [...allData].sort((a,b) => toNum(b['도달수']) - toNum(a['도달수'])).slice(0,5);
+    mk('chartHomeInstaTop', 'bar', {
+        labels: top5i.map(r => (r['콘텐츠']||'').length > 14 ? r['콘텐츠'].slice(0,14)+'…' : r['콘텐츠']),
+        datasets: [{ label:'도달수', data: top5i.map(r => toNum(r['도달수'])),
+            backgroundColor: ['#818CF8','#A78BFA','#C4B5FD','#DDD6FE','#EDE9FE'], borderRadius: 6 }]
+    }, {
+        indexAxis: 'y',
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid },
+            y: { ticks: darkTick, grid: { color:'#F1F5F9' } }
+        }
+    });
+
+    // 카카오 클릭률 Top 5
+    const top5k = [...kakaoData].sort((a,b) => toNum(b['클릭률']) - toNum(a['클릭률'])).slice(0,5);
+    mk('chartHomeKakaoTop', 'bar', {
+        labels: top5k.map(r => (r['캠페인명']||'').length > 14 ? r['캠페인명'].slice(0,14)+'…' : r['캠페인명']),
+        datasets: [{ label:'클릭률(%)', data: top5k.map(r => toNum(r['클릭률'])),
+            backgroundColor: ['#F59E0B','#FBBF24','#FCD34D','#FDE68A','#FEF3C7'], borderRadius: 6 }]
+    }, {
+        indexAxis: 'y',
+        plugins: { legend: { display:false } },
+        scales: {
+            x: { ticks: { ...darkTick, callback: v => v.toFixed(1)+'%' }, grid: darkGrid },
+            y: { ticks: darkTick, grid: { color:'#F1F5F9' } }
+        }
+    });
 }
 
 // ── 시작 ──────────────────────────────────────────────
