@@ -10,78 +10,79 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0f1117; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #F5F7FA; color: #1E293B; font-family: 'Segoe UI', Tahoma, sans-serif; }
 
         /* ── Sidebar ── */
         .sidebar {
             width: 240px;
             height: 100vh;
-            background: #1a1d29;
+            background: #fff;
             position: fixed;
             left: 0; top: 0;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #2d3148;
+            border-right: 1px solid #E2E8F0;
             z-index: 100;
         }
         .sidebar-logo {
             padding: 22px 20px;
-            border-bottom: 1px solid #2d3148;
+            border-bottom: 1px solid #E2E8F0;
             display: flex;
             align-items: center;
             gap: 12px;
         }
         .logo-icon {
             width: 36px; height: 36px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            background: linear-gradient(135deg, #818CF8, #A78BFA);
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             font-size: 18px; color: #fff;
         }
-        .logo-text h5 { margin: 0; font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
-        .logo-text span { font-size: 11px; color: #818cf8; }
+        .logo-text h5 { margin: 0; font-size: 15px; font-weight: 700; color: #1E293B; line-height: 1.2; }
+        .logo-text span { font-size: 11px; color: #A78BFA; }
 
-        .sidebar-nav { padding: 16px 12px; flex: 1; }
-        .nav-label { font-size: 10px; color: #475569; text-transform: uppercase; font-weight: 600; padding: 0 12px; margin: 12px 0 6px; letter-spacing: .08em; }
+        .sidebar-nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
+        .nav-label { font-size: 10px; color: #B0BAC9; text-transform: uppercase; font-weight: 700; padding: 0 12px; margin: 14px 0 6px; letter-spacing: .08em; }
         .nav-item {
             display: flex; align-items: center; gap: 12px;
             padding: 10px 14px;
             border-radius: 8px;
             cursor: pointer;
-            color: #94a3b8;
+            color: #64748B;
             font-size: 14px;
             margin-bottom: 2px;
             transition: all .15s;
         }
-        .nav-item:hover { background: #252840; color: #e2e8f0; }
-        .nav-item.active { background: #3730a3; color: #fff; }
+        .nav-item:hover { background: #F5F7FA; color: #1E293B; }
+        .nav-item.active { background: #EEF2FF; color: #4F46E5; font-weight: 600; }
         .nav-item i { font-size: 16px; width: 18px; text-align: center; }
 
         .sidebar-footer {
             padding: 16px 20px;
-            border-top: 1px solid #2d3148;
+            border-top: 1px solid #E2E8F0;
             font-size: 12px;
         }
-        .sidebar-footer .footer-label { color: #475569; }
-        .sidebar-footer .footer-val { color: #94a3b8; margin-top: 2px; }
+        .sidebar-footer .footer-label { color: #B0BAC9; }
+        .sidebar-footer .footer-val { color: #64748B; margin-top: 2px; }
 
         /* ── Main ── */
         .main { margin-left: 240px; padding: 28px; min-height: 100vh; }
 
         .page-header { margin-bottom: 24px; }
-        .page-header h4 { font-weight: 700; color: #fff; font-size: 22px; }
-        .page-header p { color: #64748b; font-size: 14px; margin-top: 2px; }
+        .page-header h4 { font-weight: 700; color: #1E293B; font-size: 22px; }
+        .page-header p { color: #94A3B8; font-size: 14px; margin-top: 2px; }
 
         /* ── KPI Cards ── */
         .kpi-card {
-            background: #1e2130;
-            border-radius: 12px;
+            background: #fff;
+            border-radius: 14px;
             padding: 20px;
-            border: 1px solid #2d3148;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 4px rgba(30,41,59,.05);
         }
-        .kpi-card .kpi-label { color: #64748b; font-size: 13px; margin-bottom: 8px; }
-        .kpi-card .kpi-value { font-size: 26px; font-weight: 700; color: #fff; }
-        .kpi-card .kpi-sub { color: #64748b; font-size: 12px; margin-top: 4px; }
+        .kpi-card .kpi-label { color: #94A3B8; font-size: 13px; margin-bottom: 8px; }
+        .kpi-card .kpi-value { font-size: 26px; font-weight: 700; color: #1E293B; }
+        .kpi-card .kpi-sub { color: #B0BAC9; font-size: 12px; margin-top: 4px; }
         .kpi-icon {
             width: 42px; height: 42px;
             border-radius: 10px;
@@ -91,70 +92,75 @@
 
         /* ── Chart Cards ── */
         .chart-card {
-            background: #1e2130;
-            border-radius: 12px;
+            background: #fff;
+            border-radius: 14px;
             padding: 20px;
-            border: 1px solid #2d3148;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 4px rgba(30,41,59,.05);
         }
-        .chart-card h6 { color: #e2e8f0; font-weight: 600; margin-bottom: 16px; font-size: 14px; }
+        .chart-card h6 { color: #334155; font-weight: 600; margin-bottom: 16px; font-size: 14px; }
 
         /* ── Table ── */
         .table-card {
-            background: #1e2130;
-            border-radius: 12px;
+            background: #fff;
+            border-radius: 14px;
             padding: 20px;
-            border: 1px solid #2d3148;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 4px rgba(30,41,59,.05);
         }
         .tbl { width: 100%; border-collapse: collapse; }
         .tbl thead th {
-            color: #64748b;
+            color: #94A3B8;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: .05em;
             padding: 10px 12px;
-            border-bottom: 1px solid #2d3148;
+            border-bottom: 1px solid #E2E8F0;
             white-space: nowrap;
             cursor: pointer;
             user-select: none;
+            background: #FAFBFC;
         }
-        .tbl thead th:hover { color: #cbd5e1; }
+        .tbl thead th:hover { color: #475569; }
         .tbl tbody td {
             padding: 11px 12px;
-            border-bottom: 1px solid #1a1d29;
+            border-bottom: 1px solid #F1F5F9;
             font-size: 13px;
+            color: #334155;
             vertical-align: middle;
         }
-        .tbl tbody tr:hover td { background: #252840; }
+        .tbl tbody tr:hover td { background: #F8FAFC; }
         .tbl tbody tr:last-child td { border-bottom: none; }
 
         /* ── Filter Bar ── */
         .filter-bar {
-            background: #1e2130;
-            border-radius: 12px;
+            background: #fff;
+            border-radius: 14px;
             padding: 16px 20px;
-            border: 1px solid #2d3148;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 4px rgba(30,41,59,.05);
             margin-bottom: 16px;
         }
         .form-control-dark, .form-select-dark {
-            background: #0f1117 !important;
-            border: 1px solid #2d3148 !important;
-            color: #e2e8f0 !important;
+            background: #F5F7FA !important;
+            border: 1px solid #E2E8F0 !important;
+            color: #334155 !important;
             border-radius: 8px;
             font-size: 13px;
         }
         .form-control-dark:focus, .form-select-dark:focus {
-            border-color: #6366f1 !important;
-            box-shadow: 0 0 0 3px rgba(99,102,241,.2) !important;
+            border-color: #818CF8 !important;
+            box-shadow: 0 0 0 3px rgba(129,140,248,.15) !important;
         }
-        .form-control-dark::placeholder { color: #475569; }
-        .form-select-dark option { background: #1a1d29; }
+        .form-control-dark::placeholder { color: #B0BAC9; }
+        .form-select-dark option { background: #fff; color: #334155; }
 
         /* ── Badges ── */
         .badge-type { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .badge-reels   { background: #7c3aed22; color: #a78bfa; }
-        .badge-image   { background: #0369a122; color: #38bdf8; }
-        .badge-carousel { background: #15803d22; color: #4ade80; }
+        .badge-reels    { background: #EEF2FF; color: #6366F1; }
+        .badge-image    { background: #E0F2FE; color: #0284C7; }
+        .badge-carousel { background: #DCFCE7; color: #16A34A; }
 
         /* ── Page sections ── */
         .page-section { display: none; }
@@ -164,16 +170,16 @@
         .loading-overlay {
             position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #0f1117;
+            background: #F5F7FA;
             display: flex; align-items: center; justify-content: center;
             z-index: 9999;
         }
-        .spinner-border { color: #6366f1; }
+        .spinner-border { color: #818CF8; }
 
         /* ── Scrollbar ── */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f1117; }
-        ::-webkit-scrollbar-thumb { background: #2d3148; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #F5F7FA; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
 
         .table-scroll { overflow-x: auto; }
     </style>
@@ -184,7 +190,7 @@
 <div class="loading-overlay" id="loading">
     <div class="text-center">
         <div class="spinner-border mb-3" style="width:3rem;height:3rem;"></div>
-        <div style="color:#64748b;font-size:14px;">데이터 불러오는 중...</div>
+        <div style="color:#94A3B8;font-size:14px;">데이터 불러오는 중...</div>
     </div>
 </div>
 
@@ -257,7 +263,7 @@
                             <div class="kpi-value" id="kpi-total">-</div>
                             <div class="kpi-sub">전체 콘텐츠 수</div>
                         </div>
-                        <div class="kpi-icon" style="background:#6366f122;color:#6366f1;">
+                        <div class="kpi-icon" style="background:#EEF2FF;color:#6366F1;">
                             <i class="bi bi-image"></i>
                         </div>
                     </div>
@@ -271,7 +277,7 @@
                             <div class="kpi-value" id="kpi-reach">-</div>
                             <div class="kpi-sub">누적 도달 계정</div>
                         </div>
-                        <div class="kpi-icon" style="background:#0ea5e922;color:#0ea5e9;">
+                        <div class="kpi-icon" style="background:#E0F2FE;color:#0284C7;">
                             <i class="bi bi-people"></i>
                         </div>
                     </div>
@@ -285,7 +291,7 @@
                             <div class="kpi-value" id="kpi-impression">-</div>
                             <div class="kpi-sub">누적 노출 횟수</div>
                         </div>
-                        <div class="kpi-icon" style="background:#f59e0b22;color:#f59e0b;">
+                        <div class="kpi-icon" style="background:#FEF3C7;color:#D97706;">
                             <i class="bi bi-eye"></i>
                         </div>
                     </div>
@@ -299,7 +305,7 @@
                             <div class="kpi-value" id="kpi-engagement">-</div>
                             <div class="kpi-sub">콘텐츠 평균</div>
                         </div>
-                        <div class="kpi-icon" style="background:#10b98122;color:#10b981;">
+                        <div class="kpi-icon" style="background:#D1FAE5;color:#059669;">
                             <i class="bi bi-heart"></i>
                         </div>
                     </div>
@@ -474,7 +480,7 @@
                             <div class="kpi-value" id="kkakao-total">-</div>
                             <div class="kpi-sub">전체 캠페인 수</div>
                         </div>
-                        <div class="kpi-icon" style="background:#FEE50022;color:#FEE500;">
+                        <div class="kpi-icon" style="background:#FFFBEB;color:#D97706;">
                             <i class="bi bi-chat-fill"></i>
                         </div>
                     </div>
@@ -488,7 +494,7 @@
                             <div class="kpi-value" id="kkakao-sent">-</div>
                             <div class="kpi-sub">총 발송 메시지</div>
                         </div>
-                        <div class="kpi-icon" style="background:#6366f122;color:#6366f1;">
+                        <div class="kpi-icon" style="background:#EEF2FF;color:#6366F1;">
                             <i class="bi bi-send"></i>
                         </div>
                     </div>
@@ -502,7 +508,7 @@
                             <div class="kpi-value" id="kkakao-openrate">-</div>
                             <div class="kpi-sub">캠페인 평균</div>
                         </div>
-                        <div class="kpi-icon" style="background:#f59e0b22;color:#f59e0b;">
+                        <div class="kpi-icon" style="background:#FEF3C7;color:#D97706;">
                             <i class="bi bi-envelope-open"></i>
                         </div>
                     </div>
@@ -516,7 +522,7 @@
                             <div class="kpi-value" id="kkakao-clickrate">-</div>
                             <div class="kpi-sub">캠페인 평균</div>
                         </div>
-                        <div class="kpi-icon" style="background:#10b98122;color:#10b981;">
+                        <div class="kpi-icon" style="background:#D1FAE5;color:#059669;">
                             <i class="bi bi-cursor"></i>
                         </div>
                     </div>
@@ -613,7 +619,7 @@ const KAKAO_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR9ohoWUMV3Lq
 // ── 유틸 ──────────────────────────────────────────────
 const toNum = v => parseFloat(String(v||'').replace(/,/g,'').replace(/%/g,'')) || 0;
 const fmt   = n => Math.round(n).toLocaleString('ko-KR');
-const COLORS = ['#6366f1','#8b5cf6','#ec4899','#0ea5e9','#10b981','#f59e0b','#ef4444','#14b8a6','#f97316','#84cc16'];
+const COLORS = ['#818CF8','#A78BFA','#F472B6','#38BDF8','#34D399','#FBBF24','#FB7185','#2DD4BF','#FB923C','#A3E635'];
 
 let allData = [];
 let kakaoData = [];
@@ -670,14 +676,14 @@ function loadData() {
 }
 
 // ── 차트 공통 옵션 ────────────────────────────────────
-const darkTick = { color: '#94a3b8', font: { size: 11 } };
-const darkGrid = { color: '#2d3148' };
+const darkTick = { color: '#94A3B8', font: { size: 11 } };
+const darkGrid = { color: '#E2E8F0' };
 
 // ── 월별 필터 버튼 생성 ────────────────────────────────
 function buildMonthFilter() {
     const months = [...new Set(allData.map(r => r['업로드 일자'].slice(0,7)))].sort();
     const container = document.getElementById('monthBtns');
-    const btnStyle = (active) => `padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;background:${active?'#6366f1':'#252840'};color:${active?'#fff':'#94a3b8'}`;
+    const btnStyle = (active) => `padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid ${active?'#818CF8':'#E2E8F0'};transition:all .15s;background:${active?'#EEF2FF':'#fff'};color:${active?'#4F46E5':'#64748B'}`;
 
     container.innerHTML = '';
     const allBtn = document.createElement('button');
@@ -717,7 +723,7 @@ function buildDashboard() {
     }, {
         plugins: { legend: { display: false } },
         scales: {
-            x: { ticks: darkTick, grid: { color: '#1e2130' } },
+            x: { ticks: darkTick, grid: { color: '#F1F5F9' } },
             y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
         }
     });
@@ -727,19 +733,19 @@ function buildDashboard() {
     mk('chartTypeRatio', 'doughnut', {
         labels: Object.keys(typeCount),
         datasets: [{ data: Object.values(typeCount), backgroundColor: COLORS, borderWidth: 0, hoverOffset: 6 }]
-    }, { plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } } } });
+    }, { plugins: { legend: { labels: { color: '#64748B', font: { size: 12 } } } } });
 
     // 카테고리별 평균 도달수
     const catAvg = groupAvg(filtered, '카테고리', '도달수');
     mk('chartCategoryReach', 'bar', {
         labels: catAvg.map(c => c.key),
-        datasets: [{ label:'평균 도달수', data: catAvg.map(c => c.avg), backgroundColor: '#0ea5e9', borderRadius: 6 }]
+        datasets: [{ label:'평균 도달수', data: catAvg.map(c => c.avg), backgroundColor: '#38BDF8', borderRadius: 6 }]
     }, {
         indexAxis: 'y',
         plugins: { legend: { display: false } },
         scales: {
             x: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid },
-            y: { ticks: darkTick, grid: { color: '#1e2130' } }
+            y: { ticks: darkTick, grid: { color: '#F1F5F9' } }
         }
     });
 
@@ -747,11 +753,11 @@ function buildDashboard() {
     const typeEng = groupAvg(filtered, '발행형태', '총 반응률');
     mk('chartTypeEngagement', 'bar', {
         labels: typeEng.map(t => t.key),
-        datasets: [{ label:'평균 반응률(%)', data: typeEng.map(t => t.avg), backgroundColor: '#10b981', borderRadius: 6 }]
+        datasets: [{ label:'평균 반응률(%)', data: typeEng.map(t => t.avg), backgroundColor: '#34D399', borderRadius: 6 }]
     }, {
         plugins: { legend: { display: false } },
         scales: {
-            x: { ticks: darkTick, grid: { color: '#1e2130' } },
+            x: { ticks: darkTick, grid: { color: '#F1F5F9' } },
             y: { ticks: { ...darkTick, callback: v => v.toFixed(2)+'%' }, grid: darkGrid }
         }
     });
@@ -809,8 +815,8 @@ function renderTable() {
             <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r['콘텐츠']}">${r['콘텐츠']||'-'}</td>
             <td style="color:#94a3b8">${r['카테고리']||'-'}</td>
             <td><span class="badge-type ${badgeClass(r['발행형태'])}">${r['발행형태']||'-'}</span></td>
-            <td style="color:${r['이벤트 여부']==='O'?'#4ade80':'#475569'}">${r['이벤트 여부']||'-'}</td>
-            <td style="color:#60a5fa;font-weight:600">${fmt(toNum(r['도달수']))}</td>
+            <td style="color:${r['이벤트 여부']==='O'?'#059669':'#94A3B8'}">${r['이벤트 여부']||'-'}</td>
+            <td style="color:#4F46E5;font-weight:600">${fmt(toNum(r['도달수']))}</td>
             <td>${fmt(toNum(r['노출수']))}</td>
             <td>${fmt(toNum(r['좋아요']))}</td>
             <td>${fmt(toNum(r['댓글']))}</td>
@@ -835,11 +841,11 @@ function buildAnalytics() {
     mk('chartTimeline', 'line', {
         labels: byDate.map(r => r['업로드 일자']),
         datasets: [
-            { label:'도달수', data: byDate.map(r => toNum(r['도달수'])), borderColor:'#6366f1', backgroundColor:'#6366f120', fill:true, tension:.4, pointRadius:3 },
-            { label:'노출수', data: byDate.map(r => toNum(r['노출수'])), borderColor:'#0ea5e9', backgroundColor:'#0ea5e920', fill:true, tension:.4, pointRadius:3 }
+            { label:'도달수', data: byDate.map(r => toNum(r['도달수'])), borderColor:'#818CF8', backgroundColor:'#818CF820', fill:true, tension:.4, pointRadius:3 },
+            { label:'노출수', data: byDate.map(r => toNum(r['노출수'])), borderColor:'#38BDF8', backgroundColor:'#38BDF820', fill:true, tension:.4, pointRadius:3 }
         ]
     }, {
-        plugins: { legend: { labels: { color:'#94a3b8' } } },
+        plugins: { legend: { labels: { color:'#64748B' } } },
         scales: {
             x: { ticks: { ...darkTick, maxTicksLimit: 15 }, grid: darkGrid },
             y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
@@ -854,7 +860,7 @@ function buildAnalytics() {
     }, {
         plugins: { legend: { display:false } },
         scales: {
-            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            x: { ticks: darkTick, grid: { color:'#F1F5F9' } },
             y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
         }
     });
@@ -865,11 +871,11 @@ function buildAnalytics() {
     const avg = arr => arr.length ? arr.reduce((s,r) => s+toNum(r['도달수']),0)/arr.length : 0;
     mk('chartEventReach', 'bar', {
         labels: ['이벤트 O', '이벤트 X'],
-        datasets: [{ label:'평균 도달수', data: [avg(evO), avg(evX)], backgroundColor: ['#4ade80','#64748b'], borderRadius: 8 }]
+        datasets: [{ label:'평균 도달수', data: [avg(evO), avg(evX)], backgroundColor: ['#34D399','#CBD5E1'], borderRadius: 8 }]
     }, {
         plugins: { legend: { display:false } },
         scales: {
-            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            x: { ticks: darkTick, grid: { color:'#F1F5F9' } },
             y: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid }
         }
     });
@@ -878,13 +884,13 @@ function buildAnalytics() {
     const top5 = [...allData].sort((a,b) => toNum(b['좋아요']) - toNum(a['좋아요'])).slice(0,5);
     mk('chartTopLikes', 'bar', {
         labels: top5.map(r => r['콘텐츠'].length > 12 ? r['콘텐츠'].slice(0,12)+'…' : r['콘텐츠']),
-        datasets: [{ label:'좋아요', data: top5.map(r => toNum(r['좋아요'])), backgroundColor: '#ec4899', borderRadius: 8 }]
+        datasets: [{ label:'좋아요', data: top5.map(r => toNum(r['좋아요'])), backgroundColor: '#F472B6', borderRadius: 8 }]
     }, {
         indexAxis: 'y',
         plugins: { legend: { display:false } },
         scales: {
             x: { ticks: { ...darkTick, callback: v => fmt(v) }, grid: darkGrid },
-            y: { ticks: darkTick, grid: { color:'#1e2130' } }
+            y: { ticks: darkTick, grid: { color:'#F1F5F9' } }
         }
     });
 }
@@ -950,7 +956,7 @@ function buildKakaoMonthFilter() {
     const months = [...new Set(kakaoData.map(r => r['발송날짜'].slice(0,7)))].sort();
     const container = document.getElementById('kakaoMonthBtns');
     if (!container) return;
-    const btnStyle = (active) => `padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;background:${active?'#FEE500':'#252840'};color:${active?'#3a1a00':'#94a3b8'}`;
+    const btnStyle = (active) => `padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid ${active?'#FCD34D':'#E2E8F0'};transition:all .15s;background:${active?'#FFFBEB':'#fff'};color:${active?'#D97706':'#64748B'}`;
 
     container.innerHTML = '';
     const allBtn = document.createElement('button');
@@ -996,7 +1002,7 @@ function buildKakaoDashboard() {
     }, {
         plugins: { legend: { display:false } },
         scales: {
-            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            x: { ticks: darkTick, grid: { color:'#F1F5F9' } },
             y: { ticks: { ...darkTick, stepSize:1 }, grid: darkGrid }
         }
     });
@@ -1011,7 +1017,7 @@ function buildKakaoDashboard() {
         plugins: { legend: { display:false } },
         scales: {
             x: { ticks: { ...darkTick, callback: v => v.toFixed(1)+'%' }, grid: darkGrid },
-            y: { ticks: darkTick, grid: { color:'#1e2130' } }
+            y: { ticks: darkTick, grid: { color:'#F1F5F9' } }
         }
     });
 
@@ -1023,7 +1029,7 @@ function buildKakaoDashboard() {
     }, {
         plugins: { legend: { display:false } },
         scales: {
-            x: { ticks: darkTick, grid: { color:'#1e2130' } },
+            x: { ticks: darkTick, grid: { color:'#F1F5F9' } },
             y: { ticks: { ...darkTick, callback: v => v.toFixed(1)+'%' }, grid: darkGrid }
         }
     });
@@ -1072,11 +1078,11 @@ function renderKakaoTable() {
             <td style="color:#94a3b8">${r['발송시간']||'-'}</td>
             <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r['캠페인명']}">${r['캠페인명']||'-'}</td>
             <td style="color:#94a3b8">${r['카테고리']||'-'}</td>
-            <td style="color:#60a5fa;font-weight:600">${fmt(toNum(r['발송 수']))}</td>
+            <td style="color:#4F46E5;font-weight:600">${fmt(toNum(r['발송 수']))}</td>
             <td>${fmt(toNum(r['열람 수']))}</td>
-            <td style="color:#FEE500;font-weight:600">${toNum(r['열람률']).toFixed(1)}%</td>
+            <td style="color:#D97706;font-weight:600">${toNum(r['열람률']).toFixed(1)}%</td>
             <td>${fmt(toNum(r['클릭 수']))}</td>
-            <td style="color:#10b981;font-weight:600">${toNum(r['클릭률']).toFixed(1)}%</td>
+            <td style="color:#059669;font-weight:600">${toNum(r['클릭률']).toFixed(1)}%</td>
         </tr>`).join('');
 
     const cnt = el('kakaoTableCount');
