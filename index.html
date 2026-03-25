@@ -481,7 +481,7 @@ function loadData() {
                     headers.forEach((h, i) => { obj[h] = row[i] || ''; });
                     return obj;
                 })
-                .filter(r => r['콘텐츠'] && r['콘텐츠'].trim() !== '');
+                .filter(r => /^\d{4}-\d{2}-\d{2}/.test(r['업로드 일자'] || ''));
             document.getElementById('loading').style.display = 'none';
             document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('ko-KR');
             buildDashboard();
